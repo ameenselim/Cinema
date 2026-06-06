@@ -1,0 +1,674 @@
+﻿@using Cinema_Project.ViewModel
+@using Cinema_Project.Models
+@model DashBoardVM
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<section class="dashboard-page">
+    <div class="dashboard-shell">
+
+        <div class="dashboard-header">
+            <div>
+                <span class="dashboard-kicker">Admin Overview</span>
+                <h1>Dashboard</h1>
+                <p>Track movies, bookings, revenue, and cinema activity from one place.</p>
+            </div>
+
+            <div class="dashboard-date">
+                <span>Today</span>
+                <strong>@DateTime.Now.ToString("dd MMM yyyy")</strong>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+
+            <div class="stat-card green">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-film"></i>
+                </div>
+                <div>
+                    <span>Total Movies</span>
+                    <strong>@Model.MoviesCount</strong>
+                </div>
+            </div>
+
+            <div class="stat-card blue">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-building"></i>
+                </div>
+                <div>
+                    <span>Cinemas</span>
+                    <strong>@Model.CinemasCount</strong>
+                </div>
+            </div>
+
+            <div class="stat-card purple">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div>
+                    <span>Actors</span>
+                    <strong>@Model.ActorsCount</strong>
+                </div>
+            </div>
+
+            <div class="stat-card orange">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div>
+                    <span>Categories</span>
+                    <strong>@Model.CategoriesCount</strong>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="dashboard-grid">
+
+            <div class="main-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <span>Bookings Summary</span>
+                        <h2>Booking Status</h2>
+                    </div>
+                </div>
+
+                <div class="booking-status-grid">
+
+                    <div class="status-box total">
+                        <span>Total Bookings</span>
+                        <strong>@Model.TotalBookings</strong>
+                    </div>
+
+                    <div class="status-box paid">
+                        <span>Paid</span>
+                        <strong>@Model.PaidBookings</strong>
+                    </div>
+
+                    <div class="status-box pending">
+                        <span>Pending</span>
+                        <strong>@Model.PendingBookings</strong>
+                    </div>
+
+                    <div class="status-box refunded">
+                        <span>Refunded</span>
+                        <strong>@Model.RefundedBookings</strong>
+                    </div>
+
+                </div>
+
+                <div class="revenue-card">
+                    <div>
+                        <span>Total Revenue</span>
+                        <h3>@Model.TotalRevenue.ToString("N0") EGP</h3>
+                        <p>Revenue is calculated from paid and confirmed bookings only.</p>
+                    </div>
+
+                    <div class="revenue-icon">
+                        <i class="fa-solid fa-money-bill-trend-up"></i>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="side-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <span>Quick Actions</span>
+                        <h2>Manage</h2>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <a asp-area="Admin" asp-controller="Movie" asp-action="Create">
+                        <i class="fa-solid fa-plus"></i>
+                        Add Movie
+                    </a>
+
+                    <a asp-area="Admin" asp-controller="ShowTime" asp-action="Create">
+                        <i class="fa-solid fa-clock"></i>
+                        Add Show Time
+                    </a>
+
+                    <a asp-area="Admin" asp-controller="Cinema" asp-action="Create">
+                        <i class="fa-solid fa-building"></i>
+                        Add Cinema
+                    </a>
+
+                    <a asp-area="Admin" asp-controller="Category" asp-action="Create">
+                        <i class="fa-solid fa-layer-group"></i>
+                        Add Category
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="latest-panel">
+
+            <div class="panel-header">
+                <div>
+                    <span>Recent Activity</span>
+                    <h2>Latest Bookings</h2>
+                </div>
+            </div>
+
+            @if (Model.LatestBookings != null && Model.LatestBookings.Any())
+            {
+                <div class="table-responsive">
+                    <table class="dashboard-table">
+                        <thead>
+                            <tr>
+                                <th>Booking</th>
+                                <th>Movie</th>
+                                <th>Cinema</th>
+                                <th>Seats</th>
+                                <th>Total</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var booking in Model.LatestBookings)
+                            {
+                                var paymentClass = booking.PaymentStatus.ToString().ToLower();
+                                var bookingClass = booking.BookingStatus.ToString().ToLower();
+
+                                <tr>
+                                    <td>#@booking.Id</td>
+                                    <td>@booking.ShowTime?.Movie?.Name</td>
+                                    <td>@booking.ShowTime?.Cinema?.Name</td>
+                                    <td>
+                                        @if (booking.BookingSeats != null && booking.BookingSeats.Any())
+                                        {
+                                            <span>@booking.BookingSeats.Count()</span>
+                                        }
+                                        else if (booking.PendingSeats != null && booking.PendingSeats.Any())
+                                        {
+                                            <span>@booking.PendingSeats.Count()</span>
+                                        }
+                                        else
+                                        {
+                                            <span>0</span>
+                                        }
+                                    </td>
+                                    <td>@booking.TotalPrice.ToString("N0") EGP</td>
+                                    <td>
+                                        <span class="mini-badge @paymentClass">
+                                            @booking.PaymentStatus
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="mini-badge @bookingClass">
+                                            @booking.BookingStatus
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="empty-box">
+                    <i class="fa-solid fa-ticket"></i>
+                    <p>No bookings yet.</p>
+                </div>
+            }
+
+        </div>
+
+    </div>
+</section>
+
+<style>
+    :root {
+        --primary: #2f80ed;
+        --primary-dark: #1f6fd6;
+        --primary-light: #eaf3ff;
+        --success: #22c55e;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #0ea5e9;
+        --bg: #f5f7fb;
+        --card-bg: #ffffff;
+        --text-main: #1f2937;
+        --text-muted: #6b7280;
+        --border: #e5e7eb;
+        --shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    }
+        
+
+    .dashboard-page {
+        min-height: calc(100vh - 80px);
+        padding: 30px 16px;
+        background-color: var(--bg);
+    }
+
+    .dashboard-shell {
+        width: min(1240px, 100%);
+        margin: 0 auto;
+    }
+
+    .dashboard-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
+    .dashboard-kicker,
+    .panel-header span {
+        display: inline-block;
+        color: var(--primary);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    .dashboard-header h1 {
+        margin: 6px 0 8px;
+        color: var(--text-main);
+        font-size: clamp(2rem, 5vw, 3.2rem);
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .dashboard-header p {
+        margin: 0;
+        color: var(--text-muted);
+        font-weight: 500;
+    }
+
+    .dashboard-date {
+        min-width: 170px;
+        padding: 16px 18px;
+        border-radius: 16px;
+        text-align: right;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+    }
+
+        .dashboard-date span {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .dashboard-date strong {
+            color: var(--text-main);
+            font-size: 1rem;
+            font-weight: 800;
+        }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 22px;
+    }
+
+    .stat-card,
+    .main-panel,
+    .side-panel,
+    .latest-panel {
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        background: var(--card-bg);
+        box-shadow: var(--shadow);
+    }
+
+    .stat-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 20px;
+        transition: 0.2s ease;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+    .stat-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+    }
+
+    .stat-card span {
+        display: block;
+        color: var(--text-muted);
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .stat-card strong {
+        display: block;
+        margin-top: 4px;
+        color: var(--text-main);
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .stat-card.green .stat-icon {
+        background: #eafaf0;
+        color: var(--success);
+    }
+
+    .stat-card.blue .stat-icon {
+        background: var(--primary-light);
+        color: var(--primary);
+    }
+
+    .stat-card.purple .stat-icon {
+        background: #f3e8ff;
+        color: #9333ea;
+    }
+
+    .stat-card.orange .stat-icon {
+        background: #fff3e8;
+        color: #f97316;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 330px;
+        gap: 22px;
+        margin-bottom: 22px;
+    }
+
+    .main-panel,
+    .side-panel,
+    .latest-panel {
+        padding: 24px;
+    }
+
+    .panel-header {
+        margin-bottom: 20px;
+    }
+
+        .panel-header h2 {
+            margin: 6px 0 0;
+            color: var(--text-main);
+            font-size: 1.45rem;
+            font-weight: 800;
+        }
+
+    .booking-status-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .status-box {
+        padding: 18px;
+        border-radius: 16px;
+        background: #f9fafb;
+        border: 1px solid var(--border);
+    }
+
+        .status-box span {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.74rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-box strong {
+            display: block;
+            margin-top: 8px;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .status-box.total strong {
+            color: var(--primary);
+        }
+
+        .status-box.paid strong {
+            color: var(--success);
+        }
+
+        .status-box.pending strong {
+            color: var(--warning);
+        }
+
+        .status-box.refunded strong {
+            color: var(--info);
+        }
+
+    .revenue-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 24px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #2f80ed 0%, #56ccf2 100%);
+        color: white;
+    }
+
+        .revenue-card span {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            opacity: 0.95;
+        }
+
+        .revenue-card h3 {
+            margin: 8px 0;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .revenue-card p {
+            margin: 0;
+            font-weight: 500;
+            opacity: 0.95;
+        }
+
+    .revenue-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,0.18);
+        color: white;
+        font-size: 1.9rem;
+        flex-shrink: 0;
+    }
+
+    .quick-actions {
+        display: grid;
+        gap: 12px;
+    }
+
+        .quick-actions a {
+            min-height: 50px;
+            padding: 0 16px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f9fafb;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 700;
+            border: 1px solid var(--border);
+            transition: 0.2s ease;
+        }
+
+            .quick-actions a:hover {
+                background: var(--primary-light);
+                color: var(--primary);
+                transform: translateY(-2px);
+            }
+
+        .quick-actions i {
+            color: var(--primary);
+        }
+
+    .dashboard-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .dashboard-table thead th {
+            padding: 14px;
+            background: #f8fafc;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .dashboard-table tbody td {
+            padding: 14px;
+            color: var(--text-main);
+            font-weight: 600;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .dashboard-table tbody tr:hover {
+            background: #f9fbff;
+        }
+
+    .mini-badge {
+        display: inline-flex;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+
+        .mini-badge.paid,
+        .mini-badge.confirmed {
+            background: #eafaf0;
+            color: var(--success);
+        }
+
+        .mini-badge.pending {
+            background: #fff8e6;
+            color: var(--warning);
+        }
+
+        .mini-badge.refunded {
+            background: #eaf6ff;
+            color: var(--info);
+        }
+
+        .mini-badge.failed,
+        .mini-badge.cancelled {
+            background: #feecec;
+            color: var(--danger);
+        }
+
+    .seat-mini {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 34px;
+        padding: 5px 9px;
+        margin: 2px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .booked-seat-mini {
+        background: #eafaf0;
+        color: var(--success);
+    }
+
+    .pending-seat-mini {
+        background: #fff8e6;
+        color: var(--warning);
+    }
+
+    .empty-box {
+        padding: 34px;
+        text-align: center;
+        border-radius: 16px;
+        background: #f9fafb;
+        color: var(--text-muted);
+        border: 1px dashed var(--border);
+    }
+
+        .empty-box i {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--primary);
+            font-size: 2rem;
+        }
+
+    @@media (max-width: 1100px) {
+        .stats-grid,
+        .booking-status-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 640px) {
+        .dashboard-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .dashboard-date {
+            text-align: left;
+        }
+
+        .stats-grid,
+        .booking-status-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .revenue-card {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .main-panel,
+        .side-panel,
+        .latest-panel {
+            padding: 18px;
+        }
+    }
+
+</style>

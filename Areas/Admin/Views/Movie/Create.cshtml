@@ -1,0 +1,165 @@
+﻿@using Cinema_Project.ViewModel
+@model CreateMovieVM
+
+<div class="container mt-5">
+
+    <h2 class="mb-4 text-center">Create Movie</h2>
+
+    <form method="post" enctype="multipart/form-data">
+
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+        <!-- Name -->
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Movie Name</label>
+            <input type="text" asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">Description</label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <!-- Price -->
+        <div class="mb-3">
+            <label asp-for="Price" class="form-label">Price</label>
+            <input type="number" asp-for="Price" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        <!-- Date -->
+        <div class="mb-3">
+            <label asp-for="Date" class="form-label">Release Date</label>
+            <input type="date" asp-for="Date" class="form-control" />
+            <span asp-validation-for="Date" class="text-danger"></span>
+        </div>
+
+        <!-- Status -->
+        <div class="mb-3">
+            <label asp-for="Status" class="form-label">Status</label>
+            <select asp-for="Status" class="form-control">
+                <option value="Available">Available</option>
+                <option value="notAvailable">Not Available</option>
+            </select>
+            <span asp-validation-for="Status" class="text-danger"></span>
+        </div>
+
+        <!-- Category -->
+        <div class="mb-3">
+            <label asp-for="CategoryId" class="form-label">Category</label>
+            <select asp-for="CategoryId" class="form-control">
+                <option value="">-- Select Category --</option>
+                @foreach (var category in Model.Categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
+
+        <!-- Cinema -->
+        <div class="mb-3">
+            <label asp-for="CinemaId" class="form-label">Cinema</label>
+            <select asp-for="CinemaId" class="form-control">
+                <option value="">-- Select Cinema --</option>
+                @foreach (var cinema in Model.Cinemas)
+                {
+                    <option value="@cinema.Id">@cinema.Name</option>
+                }
+            </select>
+            <span asp-validation-for="CinemaId" class="text-danger"></span>
+        </div>
+
+        <!-- Main Image -->
+        <div class="mb-3">
+            <label asp-for="MainImgFile" class="form-label">Main Image</label>
+            <input type="file"
+                   asp-for="MainImgFile"
+                   class="form-control"
+                   accept="image/*"
+                   onchange="previewImage(event)" />
+            <span asp-validation-for="MainImgFile" class="text-danger"></span>
+        </div>
+
+        <!-- Main Preview -->
+        <div class="mb-3">
+            <img id="preview"
+                 style="max-width:200px; border-radius:10px; border:1px solid #ccc; padding:5px; display:none;" />
+        </div>
+
+        <!-- Sub Images -->
+        <div class="mb-3">
+            <label asp-for="SubImgs" class="form-label">Sub Images</label>
+            <input type="file"
+                   asp-for="SubImgs"
+                   multiple
+                   class="form-control"
+                   accept="image/*"
+                   onchange="previewSubImages(event)" />
+            <span asp-validation-for="SubImgs" class="text-danger"></span>
+        </div>
+
+        <!-- Sub Preview -->
+        <div id="subPreview" class="mb-3 d-flex flex-wrap gap-2"></div>
+
+        <!-- Buttons -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-success px-4">Create</button>
+            <a href="/Admin/Movie/Index" class="btn btn-secondary px-4">Cancel</a>
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById("preview");
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function previewSubImages(event) {
+        const container = document.getElementById("subPreview");
+        container.innerHTML = "";
+
+        const files = event.target.files;
+
+        for (let i = 0; i < files.length; i++) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const img = document.createElement("img");
+                img.src = e.target.result;
+                img.style.width = "100px";
+                img.style.height = "100px";
+                img.style.objectFit = "cover";
+                img.style.borderRadius = "8px";
+
+                container.appendChild(img);
+            };
+
+            reader.readAsDataURL(files[i]);
+        }
+    }
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_NotificationPartial" />
+}

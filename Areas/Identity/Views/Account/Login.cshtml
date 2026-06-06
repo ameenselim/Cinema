@@ -1,0 +1,89 @@
+﻿@using Cinema_Project.ViewModel
+@model LoginVM
+
+@{
+
+    ViewData["Title"] = "Login";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+
+            <div class="card shadow-lg border-0 rounded-4">
+
+                <div class="card-header bg-dark text-white text-center rounded-top-4">
+                    <h3 class="mb-0">Login</h3>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <form asp-action="Login" method="post">
+
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <!-- UserName Or Email -->
+                        <div class="mb-3">
+                            <label asp-for="EmailOrUserName" class="form-label"></label>
+                            <input asp-for="EmailOrUserName"
+                                   class="form-control"
+                                   placeholder="Enter username or email" />
+                            <span asp-validation-for="EmailOrUserName" class="text-danger"></span>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password"
+                                   class="form-control"
+                                   placeholder="Enter password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <!-- Remember Me -->
+                        <div class="form-check mb-3">
+                            <input asp-for="RememberMe" class="form-check-input text-dark" />
+                            <label asp-for="RememberMe" class="form-check-label">
+                                Remember me
+                            </label>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-dark btn-lg">
+                                Login
+                            </button>
+                        </div>
+
+                    </form>
+
+
+                    <div class="text-center mt-3">
+                        <span>Don't have an account?</span>
+                        <a asp-action="Register" class="text-decoration-none ">
+                             Register
+                        </a>
+                    </div>
+                    <div class="text-center mt-2">
+                        <a asp-action="ForgetPassword" class="text-decoration-none">
+                            Forget Password?
+                        </a>
+                    </div>
+                    <div class="text-center mt-2">
+
+                        <a asp-action="ResendEmailConfirmation" class="text-decoration-none">
+                            Resend Email Confirmation
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_NotificationPartial" />
+    <partial name="_ValidationScriptsPartial" />
+}

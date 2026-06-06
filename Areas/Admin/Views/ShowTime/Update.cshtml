@@ -1,0 +1,54 @@
+﻿@using Cinema_Project.ViewModel
+@model ShowTimeVM
+
+<h1 class="text-center mt-5">Update Show Time</h1>
+
+<form asp-action="Update" method="post" class="mt-5 container-fluid">
+
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="Id" />
+
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="MovieId" class="form-label">Movie</label>
+        <select asp-for="MovieId" asp-items="Model.Movies" class="form-control">
+            <option value="">-- Select Movie --</option>
+        </select>
+        <span asp-validation-for="MovieId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CinemaId" class="form-label">Cinema</label>
+        <select asp-for="CinemaId" asp-items="Model.Cinemas" class="form-control">
+            <option value="">-- Select Cinema --</option>
+        </select>
+        <span asp-validation-for="CinemaId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="StartTime" class="form-label">Start Time</label>
+
+        <input asp-for="StartTime"
+               type="datetime-local"
+               class="form-control"
+               min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+
+        <span asp-validation-for="StartTime" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Price" class="form-label">Price</label>
+        <input asp-for="Price" class="form-control" placeholder="Price" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-warning">Update</button>
+    <a href="/Admin/ShowTime/Index" class="btn btn-secondary">Back</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_NotificationPartial" />
+}

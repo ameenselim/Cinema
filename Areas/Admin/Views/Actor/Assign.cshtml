@@ -1,0 +1,49 @@
+﻿@model Actor
+
+<div class="container mt-5">
+
+    <h2 class="mb-4 text-center">
+        Assign Movies to <span class="text-primary">@Model.Name</span>
+    </h2>
+
+    <form method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+
+        <div class="row">
+            @foreach (var movie in ViewBag.Movies)
+            {
+                <div class="col-md-3 mb-4">
+                    <div class="card shadow-sm h-100 text-center p-2">
+
+                        <!-- Checkbox -->
+                        <div class="form-check text-start">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   name="moviesIds"
+                                   value="@movie.Id"
+                                   @(Model.Movies.Any(m => m.Id == movie.Id) ? "checked" : "") />
+                        </div>
+
+                        <!-- Image -->
+                        <img src="~/Images_Layout/Admin/MovieImage/MovieMainImage/@movie.MainImg"
+                             class="card-img-top"
+                             style="height:200px; object-fit:contain;" />
+
+                        <!-- Title -->
+                        <div class="card-body">
+                            <h6 class="card-title">@movie.Name</h6>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Buttons -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success px-4">Save</button>
+            <a href="/Admin/Actor/Index" class="btn btn-secondary px-4">Cancel</a>
+        </div>
+
+    </form>
+</div>

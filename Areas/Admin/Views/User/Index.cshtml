@@ -1,0 +1,141 @@
+﻿@using Cinema_Project.Models
+@model IEnumerable<ApplicationUser>
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">All Users</h2>
+        <a href="/Admin/User/Create/" class="btn btn-success">Create</a>
+    </div>
+
+    <form method="get" asp-area="Admin" asp-controller="User" asp-action="Index">
+        <div class="d-flex mb-3">
+            <input type="text"
+                   class="form-control me-2"
+                   placeholder="Name"
+                   name="query"
+                   value="@ViewBag.Query">
+
+            <button type="submit" class="btn btn-dark">Filter</button>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-hover text-center align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>UserName</th>
+                <th>Email</th>
+                <th>Full Name</th>
+                <th style="width: 800px;">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.UserName</td>
+                    <td>@item.Email</td>
+                    <td>@item.FirstName @item.LastName</td>
+
+                    <td>
+                        <a href="/Admin/User/Update/@item.Id" class="btn btn-warning btn-sm">
+                            <i class="fa fa-edit"></i> Edit
+                        </a>
+
+                        <a href="/Admin/User/Lock/@item.Id" class="btn btn-danger btn-sm">
+                            <i class="fa fa-lock"></i> Lock
+                        </a>
+
+                        <a href="/Admin/User/Unlock/@item.Id" class="btn btn-success btn-sm">
+                            <i class="fa fa-unlock"></i> Unlock
+                        </a>
+                        <a href="/Admin/User/Delete/@item.Id" class="btn btn-danger btn-sm btn-delete">
+
+                            <i class="fa fa-trash"></i> Delete
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (ViewBag.TotalPages > 1)
+    {
+        <nav aria-label="Users pagination">
+            <ul class="pagination justify-content-center">
+
+                @if (ViewBag.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="/Admin/User/Index?page=@(ViewBag.CurrentPage - 1)&query=@ViewBag.Query">
+                            Previous
+                        </a>
+                    </li>
+                }
+
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link"
+                           href="/Admin/User/Index?page=@i&query=@ViewBag.Query">
+                            @i
+                        </a>
+                    </li>
+                }
+
+                @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="/Admin/User/Index?page=@(ViewBag.CurrentPage + 1)&query=@ViewBag.Query">
+                            Next
+                        </a>
+                    </li>
+                }
+
+            </ul>
+        </nav>
+    }
+</div>
+<script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const deleteButtons = document.querySelectorAll(".btn-delete");
+
+                deleteButtons.forEach(button => {
+                    button.addEventListener("click", function (e) {
+                        e.preventDefault(); // stop normal navigation
+
+                        const url = this.getAttribute("href");
+
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: "This action cannot be undone!",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#d33",
+                            cancelButtonColor: "#3085d6",
+                            confirmButtonText: "Yes, delete it!"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                Swal.fire({
+                                  title: "Deleted!",
+                                  text: "Your Product has been deleted.",
+                                  icon: "success"
+                                }, 3000);
+
+                                // Redirect to delete URL
+                                window.location.href = url;
+                            }
+                        });
+                    });
+                });
+            });
+</script>
+
+@section Scripts {
+                    <partial name="_ValidationScriptsPartial" />
+            <partial name="_NotificationPartial" />
+
+}

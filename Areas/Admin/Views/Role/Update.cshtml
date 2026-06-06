@@ -1,0 +1,41 @@
+﻿@using Cinema_Project.ViewModel
+@model UpdateRoleVM
+
+<h1 class="text-center mt-5">Update Role</h1>
+
+<form method="post" class="mt-5 container-fluid">
+
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+    <!-- Hidden Id -->
+    <input type="hidden" asp-for="Id" />
+
+    <!-- Role Name -->
+    <div class="input-group mb-3">
+        <span class="input-group-text">
+            <i class="fa fa-user-shield"></i>
+        </span>
+
+        <input class="form-control"
+               placeholder="Role Name"
+               asp-for="Name" />
+
+        <span class="text-danger" asp-validation-for="Name"></span>
+    </div>
+
+    <button type="submit" class="btn btn-warning">
+        Update
+    </button>
+
+    <a href="/Admin/Role/Index" class="btn btn-secondary">
+        Back
+    </a>
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_NotificationPartial" />
+}

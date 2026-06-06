@@ -1,0 +1,95 @@
+﻿@using Cinema_Project.Models
+@using Cinema_Project.Utilities
+@model IEnumerable<ShowTime>
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">All Show Times</h2>
+        
+        @if (User.IsInRole(RolesName.SUPER_ADMIN) || User.IsInRole(RolesName.ADMIN))
+        {
+            <a href="/Admin/ShowTime/Create" class="btn btn-success">Create</a>          
+        }
+    </div>
+        <!-- Filter -->
+    <form>
+        <div class="d-flex mb-3">
+            <input type="text" class="form-control me-2" placeholder="Name" name="query" value="@ViewBag.query">
+            <button type="submit" class="btn btn-dark">Filter</button>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-hover text-center align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Movie</th>
+                <th>Cinema</th>
+                <th>Start Time</th>
+                <th>Price</th>
+                <th style="width:250px;">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Movie.Name</td>
+                    <td>@item.Cinema.Name</td>
+                    <td>@item.StartTime.ToString("dd MMM yyyy - hh:mm tt")</td>
+                    <td>@item.Price EGP</td>
+
+                    <td>
+                        @if (User.IsInRole(RolesName.SUPER_ADMIN) || User.IsInRole(RolesName.ADMIN))
+                        {
+                            <a href="/Admin/ShowTime/Update/@item.Id" class="btn btn-warning btn-sm">
+                                <i class="fa fa-edit"></i> Edit
+                            </a>
+
+                            <a href="/Admin/ShowTime/Delete/@item.Id" class="btn btn-danger btn-sm btn-delete">
+                                <i class="fa fa-trash"></i> Delete
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="">No Action!</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <partial name="_NotificationPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".btn-delete").forEach(button => {
+                button.addEventListener("click", function (e) {
+                    e.preventDefault();
+
+                    const url = this.getAttribute("href");
+
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "This show time will be deleted!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "Yes, delete it!"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = url;
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,74 @@
+﻿@using Cinema_Project.ViewModel
+@model CreateUserVM
+
+<h1 class="text-center mt-5">Create User</h1>
+
+<form asp-action="Create" method="post" class="mt-5 container-fluid">
+
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+    <!-- UserName -->
+    <div class="input-group mb-3">
+        <span class="input-group-text">
+            <i class="fa fa-user"></i>
+        </span>
+        <input asp-for="UserName" class="form-control" placeholder="User Name" />
+    </div>
+    <span asp-validation-for="UserName" class="text-danger"></span>
+
+    <!-- Email -->
+    <div class="input-group mb-3 mt-3">
+        <span class="input-group-text">
+            <i class="fa fa-envelope"></i>
+        </span>
+        <input asp-for="Email" class="form-control" placeholder="Email" />
+    </div>
+    <span asp-validation-for="Email" class="text-danger"></span>
+
+    <!-- First Name -->
+    <div class="input-group mb-3 mt-3">
+        <span class="input-group-text">
+            <i class="fa fa-id-card"></i>
+        </span>
+        <input asp-for="FirstName" class="form-control" placeholder="First Name" />
+    </div>
+    <span asp-validation-for="FirstName" class="text-danger"></span>
+
+    <!-- Last Name -->
+    <div class="input-group mb-3 mt-3">
+        <span class="input-group-text">
+            <i class="fa fa-id-card"></i>
+        </span>
+        <input asp-for="LastName" class="form-control" placeholder="Last Name" />
+    </div>
+    <span asp-validation-for="LastName" class="text-danger"></span>
+
+    <!-- Password -->
+    <div class="input-group mb-3 mt-3">
+        <span class="input-group-text">
+            <i class="fa fa-lock"></i>
+        </span>
+        <input asp-for="Password" class="form-control" placeholder="Password" />
+    </div>
+    <span asp-validation-for="Password" class="text-danger"></span>
+
+    <!-- Role -->
+    <div class="input-group mb-3 mt-3">
+        <span class="input-group-text">
+            <i class="fa fa-user-shield"></i>
+        </span>
+        <select asp-for="Role" asp-items="ViewBag.Roles" class="form-control">
+            <option value="">-- Select Role --</option>
+        </select>
+    </div>
+    <span asp-validation-for="Role" class="text-danger"></span>
+
+    <button type="submit" class="btn btn-success">Submit</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_NotificationPartial" />
+}

@@ -1,0 +1,54 @@
+﻿@using Cinema_Project.ViewModel
+@model UpdateActorVM
+
+<h1 class="text-center mt-5">Update Actor</h1>
+<form method="post" class="mt-5 container-fluid" enctype="multipart/form-data">
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+    <input asp-for="Id" type="hidden" />
+
+    <!-- Name -->
+    <div class="input-group mb-3">
+        <span class="input-group-text">
+            <i class="fa fa-tag"></i>
+        </span>
+        <input type="text" class="form-control" placeholder="Actor Name" name="Name" value="@Model.Name">
+        <span class="text-danger" asp-validation-for="Name"></span>
+    </div>
+
+    <!--Main Img-->
+    <div class="mb-3">
+        <label for="actorImg" class="form-label">Actor Img</label>
+        <input type="file" class="form-control" name="actorImg" accept="image/*" onchange="previewImage(event)">
+        @* <span class="text-danger" asp-validation-for="actorImg"></span> *@
+    </div>
+    <div class="mb-3">
+        <img id="preview"
+             src="~/Images_Layout/Admin/ActorImage/@Model.Image"
+             alt="Current Image"
+             style="max-width: 200px; border:1px solid #ccc; padding:5px; border-radius:10px;" />
+        @* <span class="text-danger" asp-validation-for="actorImg"></span> *@
+    </div>
+
+    <!-- Button -->
+    <button type="submit" class="btn btn-success">Submit</button>
+
+</form>
+<script>
+        function previewImage(event) {
+            const input = event.target;
+            const preview = document.getElementById("preview");
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result; // الصورة الجديدة
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+</script>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_NotificationPartial" />
+}

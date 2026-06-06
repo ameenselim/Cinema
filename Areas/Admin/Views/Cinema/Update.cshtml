@@ -1,0 +1,123 @@
+﻿@using Cinema_Project.ViewModel
+@model UpdateCinemaVM
+
+<h1 class="text-center mt-5">Update Cinema</h1>
+
+<form method="post" class="mt-5 container-fluid" enctype="multipart/form-data">
+
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Logo" />
+
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+    <!-- Name -->
+    <div class="input-group mb-3">
+        <span class="input-group-text">
+            <i class="fa fa-tag"></i>
+        </span>
+        <input type="text"
+               class="form-control"
+               placeholder="Cinema Name"
+               asp-for="Name">
+    </div>
+    <span asp-validation-for="Name" class="text-danger"></span>
+
+    <!-- Description -->
+    <div class="input-group mb-3 mt-3">
+        <span class="input-group-text">
+            <i class="fa fa-align-left"></i>
+        </span>
+        <textarea class="form-control"
+                  rows="4"
+                  placeholder="Description"
+                  asp-for="Description"></textarea>
+    </div>
+    <span asp-validation-for="Description" class="text-danger"></span>
+
+    <!-- Rows Count -->
+    <div class="input-group mb-3 mt-3">
+        <span class="input-group-text">
+            <i class="fa fa-grip-lines"></i>
+        </span>
+        <input type="number"
+               class="form-control"
+               placeholder="Rows Count"
+               asp-for="RowsCount"
+               min="1"
+               max="26">
+    </div>
+    <span asp-validation-for="RowsCount" class="text-danger"></span>
+
+    <!-- Seats Per Row -->
+    <div class="input-group mb-3 mt-3">
+        <span class="input-group-text">
+            <i class="fa fa-chair"></i>
+        </span>
+        <input type="number"
+               class="form-control"
+               placeholder="Seats Per Row"
+               asp-for="SeatsPerRow"
+               min="1"
+               max="20">
+    </div>
+    <span asp-validation-for="SeatsPerRow" class="text-danger"></span>
+
+    <!-- Address -->
+    <div class="input-group mb-3 mt-3">
+        <span class="input-group-text">
+            <i class="fa fa-location-dot"></i>
+        </span>
+        <input type="text"
+               class="form-control"
+               placeholder="Cinema Address"
+               asp-for="Address">
+    </div>
+    <span asp-validation-for="Address" class="text-danger"></span>
+
+    <!-- Main Img -->
+    <div class="mb-3 mt-3">
+        <label asp-for="CinemaImg" class="form-label">Cinema Img</label>
+        <input type="file"
+               class="form-control"
+               asp-for="CinemaImg"
+               accept="image/*"
+               onchange="previewImage(event)">
+        <span asp-validation-for="CinemaImg" class="text-danger"></span>
+    </div>
+
+    <!-- Preview -->
+    <div class="mb-3">
+        <img id="preview"
+             src="~/Images_Layout/Admin/CinemaImage/@Model.Logo"
+             alt="Current Image"
+             style="max-width: 200px; border:1px solid #ccc; padding:5px; border-radius:10px;" />
+    </div>
+
+    <!-- Button -->
+    <button type="submit" class="btn btn-success">Submit</button>
+
+</form>
+
+<script>
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById("preview");
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_NotificationPartial" />
+}

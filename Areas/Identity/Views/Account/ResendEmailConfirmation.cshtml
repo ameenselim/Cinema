@@ -1,0 +1,54 @@
+﻿@using Cinema_Project.ViewModel
+@model ResendEmailConfirmationVM
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-dark text-white text-center rounded-top-4">
+                    <h3 class="mb-0">Resend Email Confirmation</h3>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <form asp-action="ResendEmailConfirmation" method="post">
+
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="UserNameOrEmail" class="form-label">
+                                Username or Email
+                            </label>
+
+                            <input asp-for="UserNameOrEmail"
+                                   class="form-control"
+                                   placeholder="Enter your username or email" />
+
+                            <span asp-validation-for="UserNameOrEmail"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-dark w-100">
+                            Resend Confirmation Email
+                        </button>
+
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <a asp-action="Login" class="text-decoration-none">
+                            Back to Login
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_NotificationPartial" />
+}

@@ -1,0 +1,36 @@
+﻿@using Cinema_Project.ViewModel
+@model CreateCategoryVM
+
+<h1 class="text-center mt-5">Create Category</h1>
+<form method="post" class="mt-5 container-fluid">
+
+    <!-- Name -->
+    <div class="input-group mb-3">
+        <span class="input-group-text">
+            <i class="fa fa-tag"></i>
+        </span>
+        @* <input type="text" class="form-control" placeholder="Category Name" name="Name"> *@
+        <input asp-for="Name" class="form-control" placeholder="Category Name">
+        <span asp-validation-for="Name" class="text-danger"></span>
+
+    </div>
+
+    <!-- Description -->
+    <div class="input-group mb-3">
+        <span class="input-group-text">
+            <i class="fa fa-align-left"></i>
+        </span>
+        @* <textarea class="form-control" rows="4" placeholder="Description" name="Description"></textarea> *@
+        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Description"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <!-- Button -->
+    <button type="submit" class="btn btn-success">Submit</button>
+
+</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_NotificationPartial" />
+
+}

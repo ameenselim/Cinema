@@ -1,0 +1,204 @@
+﻿@using Cinema_Project.Models
+@using Cinema_Project.ViewModel
+@model MovieDetailsVM
+
+@{
+    var movie = Model.Movie;
+
+    var availableShowTimes = Model.ShowTimes?
+        .Where(s => s.StartTime > DateTime.Now)
+        .OrderBy(s => s.StartTime)
+        .ToList() ?? new List<ShowTime>();
+}
+
+<div class="container mt-5 mb-5">
+
+    <div class="row g-5 align-items-start">
+
+        <!-- Movie Image -->
+        <div class="col-lg-4">
+
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <img src="~/Images_Layout/Admin/MovieImage/MovieMainImage/@movie.MainImg"
+                     class="img-fluid bg-dark"
+                     style="height:600px; width:100%; object-fit:contain;" />
+            </div>
+
+        </div>
+
+        <!-- Movie Details -->
+        <div class="col-lg-8">
+
+            <h1 class="fw-bold display-5">@movie.Name</h1>
+
+            <div class="d-flex gap-3 mt-3 flex-wrap">
+
+                <span class="badge bg-primary p-2 fs-6">
+                    @(movie.Category != null ? movie.Category.Name : "No Category")
+                </span>
+
+                <span class="badge bg-danger p-2 fs-6">
+                    @movie.Status
+                </span>
+
+            </div>
+
+            <p class="text-muted mt-4 fs-5" style="line-height:1.8;">
+                @movie.Description
+            </p>
+
+            <hr class="my-4" />
+
+            <!-- Show Times -->
+            <div class="mt-5">
+
+                <h3 class="fw-bold mb-4">
+                    <i class="fa fa-clock text-danger"></i>
+                    Available Show Times
+                </h3>
+
+                @if (availableShowTimes.Any())
+                {
+                    <div class="row g-4">
+
+                        @foreach (var showTime in availableShowTimes)
+                        {
+                            <div class="col-md-6">
+
+                                <div class="card border-0 shadow rounded-4 h-100">
+
+                                    <div class="card-body">
+
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+
+                                            <div>
+                                                <h5 class="fw-bold mb-1">
+                                                    @showTime.StartTime.ToString("hh:mm tt")
+                                                </h5>
+
+                                                <small class="text-muted">
+                                                    @showTime.StartTime.ToString("dddd, dd MMM yyyy")
+                                                </small>
+                                                <br />
+                                                <small class="text-muted">
+                                                    @showTime.Cinema.Name
+                                                </small> 
+                                            </div>
+
+                                            <span class="badge bg-success p-2 fs-6">
+                                                @showTime.Price EGP
+                                            </span>
+
+                                        </div>
+
+                                        <a asp-area="Customer"
+                                           asp-controller="Booking"
+                                           asp-action="Book"
+                                           asp-route-showTimeId="@showTime.Id"
+                                           class="btn btn-danger w-100 rounded-pill fw-bold">
+
+                                            <i class="fa fa-ticket"></i>
+                                            Book Now
+
+                                        </a>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning shadow-sm rounded-4">
+                        No available show times right now.
+                    </div>
+                }
+
+            </div>
+
+            <!-- Back -->
+            <div class="mt-4">
+                <a asp-area="Customer"
+                   asp-controller="Home"
+                   asp-action="Index"
+                   class="btn btn-outline-dark rounded-pill px-4">
+
+                    <i class="fa fa-arrow-left"></i>
+                    Back To Movies
+
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Actors -->
+    @if (movie.Actors != null && movie.Actors.Any())
+    {
+        <hr class="my-5" />
+
+        <h2 class="fw-bold mb-4">
+            <i class="fa fa-users text-primary"></i>
+            Actors
+        </h2>
+
+        <div class="row g-4">
+
+            @foreach (var actor in movie.Actors)
+            {
+                <div class="col-lg-2 col-md-3 col-6">
+
+                    <div class="card border-0 shadow rounded-4 overflow-hidden h-100 text-center">
+
+                        <img src="~/Images_Layout/Admin/ActorImage/@actor.Image"
+                             class="bg-dark"
+                             style="height:250px; width:100%; object-fit:contain;" />
+
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-0">@actor.Name</h6>
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+    <!-- Movie Images -->
+    @if (movie.MovieSubImages != null && movie.MovieSubImages.Any())
+    {
+        <hr class="my-5" />
+
+        <h2 class="fw-bold mb-4">
+            <i class="fa fa-image text-success"></i>
+            Movie Images
+        </h2>
+
+        <div class="row g-4">
+
+            @foreach (var img in movie.MovieSubImages)
+            {
+                <div class="col-lg-3 col-md-4 col-6">
+
+                    <div class="card border-0 shadow rounded-4 overflow-hidden">
+                        <img src="~/Images_Layout/Admin/MovieImage/MovieSubImages/@img.SubImg"
+                             style="height:250px; width:100%; object-fit:cover;" />
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
+@section Scripts{
+    <partial name="_NotificationPartial" />
+}

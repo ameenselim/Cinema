@@ -1,0 +1,99 @@
+﻿@using Cinema_Project.ViewModel
+@model RegisterVM
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-dark text-white text-center rounded-top-4">
+                    <h3 class="mb-0">Create Account</h3>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <form asp-action="Register" method="post">
+
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <!-- First Name -->
+                        <div class="mb-3">
+                            <label asp-for="FName" class="form-label">First Name</label>
+                            <input asp-for="FName" class="form-control" placeholder="Enter first name" />
+                            <span asp-validation-for="FName" class="text-danger"></span>
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="mb-3">
+                            <label asp-for="LName" class="form-label">Last Name</label>
+                            <input asp-for="LName" class="form-control" placeholder="Enter last name" />
+                            <span asp-validation-for="LName" class="text-danger"></span>
+                        </div>
+
+                        <!-- UserName -->
+                        <div class="mb-3">
+                            <label asp-for="UserName" class="form-label">User Name</label>
+                            <input asp-for="UserName" class="form-control" placeholder="Enter UserName" />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email</label>
+                            <input asp-for="Email" class="form-control" placeholder="Enter email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label">Password</label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm password" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="mb-3">
+                            <label asp-for="Address" class="form-label">Address</label>
+                            <textarea asp-for="Address" class="form-control" rows="3" placeholder="Enter address"></textarea>
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-dark btn-lg">
+                                Register
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="card-footer text-center bg-light rounded-bottom-4">
+                    <span>Already have an account?</span>
+                    <a asp-action="Login" asp-controller="Account" class="text-decoration-none ">
+                        Login
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_NotificationPartial" />
+}

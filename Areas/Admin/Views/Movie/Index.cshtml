@@ -1,0 +1,149 @@
+﻿@using Cinema_Project.Utilities
+@using Cinema_Project.ViewModel
+
+@model MovieWithRelated
+
+<div class="container mt-5">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">All Movies</h2>
+        @if (!User.IsInRole(RolesName.EMPLOYEE))
+        {
+            <a href="/Admin/Movie/Create" class="btn btn-success">Create</a>
+        }
+    </div>
+
+    <!-- Filter -->
+    <form>
+        <div class="d-flex mb-3">
+            <input type="text" class="form-control me-2" placeholder="Name" name="query" value="@Model.Query">
+            <button type="submit" class="btn btn-dark">Filter</button>
+        </div>
+    </form>
+
+    <!-- Table -->
+    <table class="table table-bordered table-hover text-center align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Category Name</th>
+                <th>Cinema Name</th>
+                <th>Status</th>
+                <th style="width: 300px;">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model.movies)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.Price</td>
+                    <td>@item.Category.Name</td>
+                    <td>@item.Cinema.Name</td>
+                    <td>@item.Status</td>
+
+                    <td>
+                        @if (!User.IsInRole(RolesName.EMPLOYEE))
+                        {
+                            <a href="/Admin/Movie/Assign/@item.Id" class="btn btn-info btn-sm">
+                                <i class="fa fa-link"></i>Assign
+                            </a>
+
+                            <a href="/Admin/Movie/Update/@item.Id" class="btn btn-warning btn-sm">
+                                <i class="fa fa-edit"></i>Edit
+                            </a>
+
+                            <a href="/Admin/Movie/Delete/@item.Id" class="btn btn-danger btn-sm btn-delete">
+                                <i class="fa fa-trash"></i>Delete
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No Actions Available</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination -->
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center mt-4">
+
+        @if (Model.CurrentPage > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" href="/Admin/Movie/Index?page=@(Model.CurrentPage - 1)">Previous</a>
+            </li>
+        }
+
+        @for (var i = 1; i <= Model.TotalPage; i++)
+        {
+            if (Model.CurrentPage == i)
+            {
+                <li class="page-item active">
+                    <a class="page-link" href="/Admin/Movie/Index?page=@i">@i</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link" href="/Admin/Movie/Index?page=@i">@i</a>
+                </li>
+            }
+        }
+
+        @if (Model.CurrentPage != Model.TotalPage)
+        {
+            <li class="page-item">
+                <a class="page-link" href="/Admin/Movie/Index?page=@(Model.CurrentPage + 1)">Next</a>
+            </li>
+        }
+
+    </ul>
+</nav>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll(".btn-delete");
+
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", function (e) {
+                e.preventDefault(); // stop normal navigation
+
+                const url = this.getAttribute("href");
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "This action cannot be undone!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                          title: "Deleted!",
+                          text: "Your Product has been deleted.",
+                          icon: "success"
+                        }, 3000);
+
+                        // Redirect to delete URL
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    });
+</script> 
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_NotificationPartial" />
+}
